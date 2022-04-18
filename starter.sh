@@ -11,7 +11,7 @@ echo
 echo "For it to work, the following packages need to be installed:"
 echo "JDK 11.x (MUST be set as default)"
 echo "Maven"
-echo "RabbitMQ"
+echo "RabbitMQ (service MUST run)"
 echo "Screen"
 echo
 echo "ATTENTION: Make sure to terminate all running screen sessions before restarting them with this script!"
