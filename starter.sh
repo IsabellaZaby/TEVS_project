@@ -40,8 +40,8 @@ screen -AmdS serviceTwo mvn spring-boot:run -Dspring-boot.run.jvmArguments=-Dser
 echo
 screen -ls
 echo
-echo "To access the running screen session enter \"screen -r session-name\""
-echo "To leave a session without terminatin the running service, enter CTRL+a+d"
+echo "To access a running screen session enter \"screen -r session-name\""
+echo "To leave a session without terminating the running service, enter CTRL+a+d inside."
 echo
 echo "Bye!"
 
