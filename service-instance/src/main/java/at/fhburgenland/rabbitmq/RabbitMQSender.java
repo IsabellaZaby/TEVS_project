@@ -1,4 +1,4 @@
-package at.fhburgenland;
+package at.fhburgenland.rabbitmq;
 
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

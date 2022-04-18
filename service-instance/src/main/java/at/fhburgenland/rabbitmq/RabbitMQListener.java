@@ -1,4 +1,4 @@
-package at.fhburgenland;
+package at.fhburgenland.rabbitmq;
 
 
 import org.springframework.amqp.core.Message;

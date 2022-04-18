@@ -18,6 +18,7 @@ eureka:
 javainuse:
   rabbitmq:
     routingkey: javainuse.routingkey
-    queue: javainuse.queue
+    queue: ${listening.queue}
     exchange: javainuse.exchange
+    sending: ${sending.queue}
 
