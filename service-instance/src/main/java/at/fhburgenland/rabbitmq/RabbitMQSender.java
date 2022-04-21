@@ -1,9 +1,19 @@
 package at.fhburgenland.rabbitmq;
 
+import at.fhburgenland.model.Model;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+
+/**
+ * @author Stefan Gass, Isabella Zaby
+ * @version 1.0
+ * <p>
+ * This class acts as the sender for the configuration for the rabbitmq message broker.
+ * @since April 2022
+ */
 
 @Service
 public class RabbitMQSender {
@@ -14,9 +24,9 @@ public class RabbitMQSender {
     @Value("${test.rabbitmq.exchange}")
     private String exchange;
 
-    public void send(String test) {
-        rabbitTemplateTest.convertAndSend(exchange, "", test);
-        System.out.println("Send msg = " + test);
-
+    public void sendMessage(Model model) {
+        rabbitTemplateTest.convertAndSend(exchange, "", model);
+        System.out.println("Send msg -> " + model.toString());
     }
+
 }

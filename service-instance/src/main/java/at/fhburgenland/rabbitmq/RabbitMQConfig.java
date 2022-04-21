@@ -13,6 +13,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author Stefan Gass, Isabella Zaby
+ * @version 1.0
+ * <p>
+ * This class provides the configuration for the rabbitmq message broker.
+ * @since April 2022
+ */
+
 @Configuration
 public class RabbitMQConfig {
 
@@ -68,7 +76,7 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    MessageListenerContainer messageListenerContainer(ConnectionFactory connectionFactory ) {
+    MessageListenerContainer messageListenerContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
         simpleMessageListenerContainer.setConnectionFactory(connectionFactory);
         simpleMessageListenerContainer.setQueues(listeningQueue());
@@ -77,11 +85,11 @@ public class RabbitMQConfig {
 
     }
 
-
     @Bean
     public AmqpTemplate rabbitTemplateTest(ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
         return rabbitTemplate;
     }
+
 }
