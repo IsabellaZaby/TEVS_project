@@ -5,19 +5,18 @@
 
 path=$(dirname "$0")
 
-echo "Welcome! :)"
+echo "Welcome! :-)"
 echo "This scripts acts as a starter for the included spring services."
 echo
 echo "For it to work, the following packages need to be installed:"
 echo "JDK 11.x (MUST be set as default)"
 echo "Maven"
-echo "RabbitMQ (service MUST run)"
+echo "RabbitMQ (service MUST run or being started with script)"
 echo "Screen"
 echo
 echo "ATTENTION: Make sure to terminate all running screen sessions before restarting them with this script!"
 echo
 echo "Do you want to continue? (y/n)"
-
 read continue
 if [[ $continue != y* ]]; then
     echo "Bye!"
@@ -25,10 +24,24 @@ if [[ $continue != y* ]]; then
 fi
 
 # Works only on Linux...
-#screen -X -S discoveryServer quit &> /dev/null
-#screen -X -S gateway quit &> /dev/null
-#screen -X -S serviceOne quit &> /dev/null
-#screen -X -S serviceTwo quit &> /dev/null
+#echo
+#echo "Do you want to start to quit all running screen sessions? (y/n"
+#read continueMQ
+#if [[ $continueMQ == y* ]]; then
+#    screen -X -S rabbitMQ kill &> /dev/null
+#    screen -X -S discoveryServer kill &> /dev/null
+#    screen -X -S gateway kill &> /dev/null
+#    screen -X -S serviceOne kill &> /dev/null
+#    screen -X -S serviceTwo kill &> /dev/null
+#    screen -X -S serviceThree kill &> /dev/null
+#fi
+
+echo
+echo "Do you want to start the RabbitMQ server? (y/n"
+read continueMQ
+if [[ $continueMQ == y* ]]; then
+    screen -AmdS rabbitMQ rabbitmq-server
+fi
 
 cd $path/discovery-server
 screen -AmdS discoveryServer mvn spring-boot:run
