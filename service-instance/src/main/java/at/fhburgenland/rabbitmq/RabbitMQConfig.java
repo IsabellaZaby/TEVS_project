@@ -19,17 +19,17 @@ public class RabbitMQConfig {
     @Autowired
     EurekaClient eurekaClient;
 
-    @Value("${javainuse.rabbitmq.queue}")
+    @Value("${test.rabbitmq.queue}")
     String queueName;
 
-    @Value("${javainuse.rabbitmq.sending}")
+    @Value("${test.rabbitmq.sending}")
     String sending;
 
-    @Value("${javainuse.rabbitmq.exchange}")
-    String exchange;
+    @Value("${test.rabbitmq.sendingSecond}")
+    String sendingTwo;
 
-    @Value("${javainuse.rabbitmq.routingkey}")
-    private String routingkey;
+    @Value("${test.rabbitmq.exchange}")
+    String exchange;
 
     @Bean
     Queue sendingQueue() {
@@ -37,18 +37,29 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue sendingQueueTwo() {
+        return new Queue(sendingTwo, false);
+    }
+
+
+    @Bean
     Queue listeningQueue() {
         return new Queue(queueName, false);
     }
 
     @Bean
-    DirectExchange exchange() {
-        return new DirectExchange(exchange);
+    FanoutExchange exchange() {
+        return new FanoutExchange(exchange);
     }
 
     @Bean
-    Binding binding(Queue sendingQueue, DirectExchange exchange) {
-        return BindingBuilder.bind(sendingQueue).to(exchange).with(routingkey);
+    Binding binding(Queue sendingQueue, FanoutExchange exchange) {
+        return BindingBuilder.bind(sendingQueue).to(exchange);
+    }
+
+    @Bean
+    Binding queueTwoBinding(Queue sendingQueueTwo, FanoutExchange exchange) {
+        return BindingBuilder.bind(sendingQueueTwo).to(exchange);
     }
 
     @Bean

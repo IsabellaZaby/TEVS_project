@@ -35,8 +35,9 @@ screen -AmdS discoveryServer mvn spring-boot:run
 cd ../gateway
 screen -AmdS gateway mvn spring-boot:run
 cd ../service-instance
-screen -AmdS serviceOne mvn spring-boot:run -Dspring-boot.run.arguments="--listening.queue=microservice.one --sending.queue=microservice.two"
-screen -AmdS serviceTwo mvn spring-boot:run -Dspring-boot.run.jvmArguments=-Dserver.port=9002 -Dspring-boot.run.arguments="--listening.queue=microservice.two --sending.queue=microservice.one"
+screen -AmdS serviceOne mvn spring-boot:run -Dspring-boot.run.arguments="--listening.queue=microservice.one --sending.queue=microservice.two --sending.two.queue=microservice.three"
+screen -AmdS serviceTwo mvn spring-boot:run -Dspring-boot.run.jvmArguments=-Dserver.port=9002 -Dspring-boot.run.arguments="--listening.queue=microservice.two --sending.queue=microservice.one --sending.two.queue=microservice.three"
+screen -AmdS serviceThree mvn spring-boot:run -Dspring-boot.run.jvmArguments=-Dserver.port=9003 -Dspring-boot.run.arguments="--listening.queue=microservice.three --sending.queue=microservice.one --sending.two.queue=microservice.two"
 
 echo
 screen -ls
