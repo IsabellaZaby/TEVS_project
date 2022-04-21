@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Client</title>
+
+</head>
+<body>
+<form id="form">
+    <label for="username">First name:</label><br>
+    <input type="text" id="username" name="username" value="John"><br>
+    <label for="statustext">Statustext:</label><br>
+    <input type="text" id="statustext" name="statustext" value="Doe"><br>
+    <label for="uhrzeit">Uhrzeit:</label><br>
+    <input type="text" id="uhrzeit" name="uhrzeit" value="22:00"><br><br>
+    <input type="submit" value="Submit">
+</form>
+<div>Result:
+<ul id="list">
+
+</ul>
+</div>
+</body>
+<script>
+    const form = document.getElementById("form");
+    const list = document.getElementById("list");
+    const sendResponse = async () => {
+        const rawResponse = await fetch('http://localhost:9000/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+            body: JSON.stringify({username: form.username.value, statustext: form.statustext.value, uhrzeit: new Date()})
+        });
+        const content = await rawResponse.json();
+
+       list.innerHTML = content;
+    }
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        sendResponse();
+
+    });
+</script>
+
+</html>

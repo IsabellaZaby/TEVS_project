@@ -9,6 +9,17 @@ spring:
           uri: lb://microservice
           predicates:
             - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
 server:
   port: 9000
 
