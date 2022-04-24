@@ -2,41 +2,105 @@
 <html lang="en">
 <head>
     <title>Client</title>
-
+    <link rel="stylesheet" href="stylesheet.css">
 </head>
 <body>
-<form id="form">
-    <label for="username">First name:</label><br>
-    <input type="text" id="username" name="username" value="John"><br>
-    <label for="statustext">Statustext:</label><br>
-    <input type="text" id="statustext" name="statustext" value="Doe"><br>
-    <label for="uhrzeit">Uhrzeit:</label><br>
-    <input type="text" id="uhrzeit" name="uhrzeit" value="22:00"><br><br>
-    <input type="submit" value="Submit">
-</form>
-<div>Result:
-<ul id="list">
-
-</ul>
+<h1>POST</h1>
+<div>
+    <form id="post">
+        <label for="usernamePost">Name:</label><br>
+        <input type="text" id="usernamePost" name="usernamePost" value="John"><br>
+        <label for="statustextPost">Statustext:</label><br>
+        <input type="text" id="statustextPost" name="statustextPost" value="Doe"><br>
+        <br>
+        <input type="submit" value="Submit"><br>
+        <br>
+    </form>
+</div>
+<hr/>
+<h1>PUT</h1>
+<div>
+    <form id="put">
+        <label for="idPut">ID:</label><br>
+        <input type="text" id="idPut" name="idPut" value="0"><br>
+        <label for="usernamePut">Name:</label><br>
+        <input type="text" id="usernamePut" name="usernamePut" value="John"><br>
+        <label for="statustextPut">Statustext:</label><br>
+        <input type="text" id="statustextPut" name="statustextPut" value="Doe"><br>
+        <br>
+        <input type="submit" value="Submit"><br>
+        <br>
+    </form>
+</div>
+<hr/>
+<h1>DELETE</h1>
+<div>
+    <form id="del">
+        <label for="idDelete">ID:</label><br>
+        <input type="text" id="idDelete" name="idDelete" value="0"><br>
+        <br>
+        <input type="submit" value="Submit"><br>
+        <br>
+    </form>
+</div>
+<hr/>
+<div>
+    <h1>GET</h1>
+    <ul id="get">
+    </ul>
 </div>
 </body>
 <script>
-    const form = document.getElementById("form");
-    const list = document.getElementById("list");
-    const sendResponse = async () => {
+    const get = document.getElementById("get");
+    const post = document.getElementById("post");
+    const put = document.getElementById("put");
+    const del = document.getElementById("del");
+    // post
+    const sendPostResponse = async () => {
         const rawResponse = await fetch('http://localhost:9000/', {
             method: 'POST',
             headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-            body: JSON.stringify({username: form.username.value, statustext: form.statustext.value, uhrzeit: new Date()})
+            body: JSON.stringify({
+                username: post.usernamePost.value,
+                statustext: post.statustextPost.value,
+            })
         });
         const content = await rawResponse.json();
-
-       list.innerHTML = content;
+        get.innerHTML = JSON.stringify(content);
     }
-    form.addEventListener("submit", (e) => {
+    post.addEventListener("submit", (e) => {
         e.preventDefault();
-        sendResponse();
-
+        sendPostResponse();
+    });
+    // put
+    const sendPutResponse = async () => {
+        const rawResponse = await fetch('http://localhost:9000/' + put.idPut.value, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+            body: JSON.stringify({
+                id: put.idPut.value,
+                username: put.usernamePut.value,
+                statustext: put.statustextPut.value,
+            })
+        });
+        const content = await rawResponse.json();
+        get.innerHTML = JSON.stringify(content);
+    }
+    put.addEventListener("submit", (e) => {
+        e.preventDefault();
+        sendPutResponse();
+    });
+    // delete
+    const sendDeleteResponse = async () => {
+        const rawResponse = await fetch('http://localhost:9000/' + del.idDelete.value, {
+            method: 'DELETE'
+        });
+        const content = await rawResponse.json();
+        get.innerHTML = JSON.stringify(content);
+    }
+    del.addEventListener("submit", (e) => {
+        e.preventDefault();
+        sendDeleteResponse();
     });
 </script>
 
