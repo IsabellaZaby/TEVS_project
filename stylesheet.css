@@ -1,0 +1,12 @@
+body {
+    margin: 1em auto;
+    text-align: center;
+    width: 80%
+}
+
+hr {
+    background-color: gray;
+    color: gray;
+    border: gray;
+    height: 1px;
+}
