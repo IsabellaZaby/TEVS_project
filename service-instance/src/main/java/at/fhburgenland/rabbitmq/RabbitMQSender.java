@@ -1,6 +1,7 @@
 package at.fhburgenland.rabbitmq;
 
 import at.fhburgenland.model.Model;
+import at.fhburgenland.model.ModelMQ;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +25,7 @@ public class RabbitMQSender {
     @Value("${test.rabbitmq.exchange}")
     private String exchange;
 
-    public void sendMessage(Model model) {
+    public void sendMessage(ModelMQ model) {
         rabbitTemplateTest.convertAndSend(exchange, "", model);
         System.out.println("Send msg -> " + model.toString());
     }
