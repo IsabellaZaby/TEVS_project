@@ -33,15 +33,11 @@ public class Controller {
     @Value("${server.port}")
     private String port;
 
-//    public Controller(Service service) {
-//        this.service = service;
-//    }
-
     /**
      * HTTP GET
      * retrieves all data
      *
-     * @return String
+     * @return List of objects
      */
     @GetMapping
     public List<Model> getData() {
@@ -53,7 +49,7 @@ public class Controller {
      * adds new entry
      *
      * @param model object, which is to be added to the list
-     * @return String
+     * @return List of objects
      */
     @PostMapping
     public List<Model> addData(@RequestBody Model model) {
@@ -69,7 +65,7 @@ public class Controller {
      *
      * @param id       id of list entry, which is to be updated
      * @param newModel updated object
-     * @return String
+     * @return List of objects
      */
     @PutMapping(path = "{id}")
     public List<Model> updateData(@PathVariable("id") Integer id, @RequestBody Model newModel) throws Exception {
@@ -84,7 +80,7 @@ public class Controller {
      * deletes existing entry
      *
      * @param id id of list entry, which is to be deleted
-     * @return String
+     * @return List of objects
      */
     @DeleteMapping(path = "{id}")
     public List<Model> deleteData(@PathVariable("id") Integer id) throws Exception {

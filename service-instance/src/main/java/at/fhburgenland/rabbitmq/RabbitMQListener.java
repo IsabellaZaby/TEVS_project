@@ -24,8 +24,6 @@ public class RabbitMQListener implements MessageListener {
     public void onMessage(Message message) {
         System.out.println("Consuming Message - " + new String(message.getBody()));
         restService.getUpdateData(message);
-
-
     }
 
 }

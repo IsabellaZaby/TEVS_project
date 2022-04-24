@@ -32,6 +32,12 @@ public class RestService {
 
     private List<Model> modelList = new ArrayList<>();
 
+    /**
+     * HTTP GET service
+     * retrieves all data
+     *
+     * @return List of objects
+     */
     public List<Model> getData() {
         if (modelList.isEmpty()) {
             List<Model> emptyList = new ArrayList<>();
@@ -42,12 +48,27 @@ public class RestService {
         }
     }
 
+    /**
+     * HTTP POST service
+     * adds new entry
+     *
+     * @param model object, which is to be added to the list
+     * @return List of objects
+     */
     public List<Model> addData(Model model) {
         model.setId(generateId());
         modelList.add(model);
         return modelList;
     }
 
+    /**
+     * HTTP PUT service
+     * updates existing entry
+     *
+     * @param id       id of list entry, which is to be updated
+     * @param newModel updated object
+     * @return List of objects
+     */
     public List<Model> updateData(Integer id, Model newModel) throws Exception {
         Integer index = getIndex(id);
         if (index != null) {
@@ -58,6 +79,13 @@ public class RestService {
         return modelList;
     }
 
+    /**
+     * HTTP DELETE
+     * deletes existing entry
+     *
+     * @param id id of list entry, which is to be deleted
+     * @return List of objects
+     */
     public List<Model> deleteData(Integer id) throws Exception {
         Integer index = getIndex(id);
         if (index != null) {
@@ -68,6 +96,11 @@ public class RestService {
         return modelList;
     }
 
+    /**
+     * Generate an integer depending on the last entry of the list.
+     *
+     * @return ID as integer
+     */
     private Integer generateId() {
         if (modelList.isEmpty()) {
             return 0;
@@ -76,6 +109,12 @@ public class RestService {
         }
     }
 
+    /**
+     * Get the index of an entry within the array list.
+     *
+     * @param id the number we are looking for
+     * @return the index of the entry we are looking for
+     */
     private Integer getIndex(Integer id) {
         for (int i = 0; i < modelList.size(); i++) {
             if (Objects.equals(modelList.get(i).getId(), id)) {
@@ -85,9 +124,14 @@ public class RestService {
         return null;
     }
 
+    /**
+     * Add/change/delete entries from the list, depending on the RabbitMQ message.
+     * Ignore the message, if it is coming from yourself.
+     *
+     * @param message containing ModelMQ object
+     */
     public void getUpdateData(Message message) {
         System.out.println(new String(message.getBody()));
-        System.out.println("#####");
         Gson gson = new Gson();
         JsonObject js = gson.fromJson(new String(message.getBody()), JsonObject.class);
         Integer id = !(js.get("id")).isJsonNull() ? js.get("id").getAsInt() : this.modelList.size();
@@ -111,6 +155,13 @@ public class RestService {
         }
     }
 
+    /**
+     * Create the matching ModelMQ from content of the RabbitMQ message.
+     *
+     * @param id the id of the Model, which will be created
+     * @param js the json content of the RabbitMQ message
+     * @return the corresponding ModelMQ object
+     */
     private ModelMQ createModel(Integer id, JsonObject js) {
         JsonObject time = (JsonObject) js.get("uhrzeit");
         String str = time.get("year") + "-" + time.get("monthValue") + "-" +

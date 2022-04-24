@@ -24,7 +24,7 @@
         <label for="idPut">ID:</label><br>
         <input type="text" id="idPut" name="idPut" value="0"><br>
         <label for="usernamePut">Name:</label><br>
-        <input type="text" id="usernamePut" name="usernamePut" value="John"><br>
+        <input type="text" id="usernamePut" name="usernamePut" value="Jane"><br>
         <label for="statustextPut">Statustext:</label><br>
         <input type="text" id="statustextPut" name="statustextPut" value="Doe"><br>
         <br>
@@ -55,6 +55,19 @@
     const post = document.getElementById("post");
     const put = document.getElementById("put");
     const del = document.getElementById("del");
+    // get
+    const getResponse = async () => {
+        const rawResponse = await fetch('http://localhost:9000/', {
+            method: 'GET'
+        });
+        const content = await rawResponse.json();
+        if (rawResponse.ok) {
+            get.innerHTML = JSON.stringify(content);
+        } else {
+            get.innerHTML = "Wait until the services are started...";
+        }
+    }
+    getResponse();
     // post
     const sendPostResponse = async () => {
         const rawResponse = await fetch('http://localhost:9000/', {

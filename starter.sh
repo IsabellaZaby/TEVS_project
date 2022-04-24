@@ -50,13 +50,13 @@ echo "ATTENTION: This may take a while, so make sure to wait until the script is
 read -r continueRC
 if [[ $continueRC == y* ]]; then
   cd "$path" || exit 1
-  mvn clean install
+  mvn clean install spring-boot:repackage
   cd ./discovery-server || exit 1
-  mvn clean install
+  mvn clean install spring-boot:repackage
   cd ../gateway || exit 1
-  mvn clean install
+  mvn clean install spring-boot:repackage
   cd ../service-instance || exit 1
-  mvn clean install
+  mvn clean install spring-boot:repackage
 fi
 
 cd "$path"/discovery-server || exit 1

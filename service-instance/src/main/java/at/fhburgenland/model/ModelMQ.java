@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 public class ModelMQ extends Model {
 
-
     private final String port;
     private final RestMethod method;
 
