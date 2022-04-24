@@ -1,10 +1,16 @@
 package at.fhburgenland.controller;
 
 import at.fhburgenland.model.Model;
+import at.fhburgenland.model.ModelMQ;
+import at.fhburgenland.model.RestMethod;
 import at.fhburgenland.rabbitmq.RabbitMQSender;
 import at.fhburgenland.service.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
 
 /**
  * @author Stefan Gass, Isabella Zaby
@@ -34,9 +40,7 @@ public class Controller {
      * @return String
      */
     @GetMapping
-    public String getData() {
-        // public String getData(HttpServletRequest request) {
-        // rabbitMQSender.send(request.getRequestURL().toString());
+    public List<Model> getData() {
         return service.getData();
     }
 
@@ -48,27 +52,25 @@ public class Controller {
      * @return String
      */
     @PostMapping
-    public String addData(@RequestBody Model model) {
-        service.addData(model);
-        // TODO add rabbitmq message
-        // rabbitMQSender.sendMessage(model);
-        return "Added entry " + model.toString();
+    public List<Model> addData(@RequestBody Model model) {
+        model.setUhrzeit(LocalDateTime.now(ZoneId.of("Europe/Vienna")));
+        rabbitMQSender.sendMessage(new ModelMQ(model.getId(), model.getUsername(), model.getStatustext(), model.getUhrzeit(), null, RestMethod.POST));
+        return service.addData(model);
     }
 
     /**
      * HTTP PUT
      * updates existing entry
      *
-     * @param id id of list entry, which is to be updated
+     * @param id       id of list entry, which is to be updated
      * @param newModel updated object
      * @return String
      */
     @PutMapping(path = "{id}")
-    public String updateData(@PathVariable("id") Integer id, @RequestBody Model newModel) {
-        service.updateData(id, newModel);
-        // TODO add rabbitmq message
-        //rabbitMQSender.sendMessage(model);
-        return "Updated entry with id " + id;
+    public List<Model> updateData(@PathVariable("id") Integer id, @RequestBody Model newModel) throws Exception {
+        newModel.setUhrzeit(LocalDateTime.now(ZoneId.of("Europe/Vienna")));
+        rabbitMQSender.sendMessage(new ModelMQ(newModel.getId(), newModel.getUsername(), newModel.getStatustext(), newModel.getUhrzeit(), id, RestMethod.PUT));
+        return service.updateData(id, newModel);
     }
 
     /**
@@ -79,11 +81,9 @@ public class Controller {
      * @return String
      */
     @DeleteMapping(path = "{id}")
-    public String deleteData(@PathVariable("id") Integer id) {
-        service.deleteData(id);
-        // TODO add rabbitmq message
-        //rabbitMQSender.sendMessage(model);
-        return "Deleted entry with id: " + id;
+    public List<Model> deleteData(@PathVariable("id") Integer id) throws Exception {
+        rabbitMQSender.sendMessage(new ModelMQ(null, null, null, null, id, RestMethod.DELETE));
+        return service.deleteData(id);
     }
 
 }
