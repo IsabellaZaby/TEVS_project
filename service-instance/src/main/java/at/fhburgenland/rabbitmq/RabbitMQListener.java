@@ -1,6 +1,6 @@
 package at.fhburgenland.rabbitmq;
 
-import at.fhburgenland.model.ModelMQ;
+import at.fhburgenland.service.RestService;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.stereotype.Service;
@@ -15,9 +15,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class RabbitMQListener implements MessageListener {
 
+    private final RestService restService;
+
+    public RabbitMQListener(RestService restService) {
+        this.restService = restService;
+    }
+
     public void onMessage(Message message) {
         System.out.println("Consuming Message - " + new String(message.getBody()));
-        // convert message to Object
+        restService.getUpdateData(message);
+
 
     }
 

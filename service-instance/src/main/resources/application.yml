@@ -26,4 +26,3 @@ test:
     exchange: distributed.exchange
     sending: ${sending.queue}
     sendingSecond: ${sending.two.queue}
-
