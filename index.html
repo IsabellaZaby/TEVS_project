@@ -66,7 +66,11 @@
             })
         });
         const content = await rawResponse.json();
-        get.innerHTML = JSON.stringify(content);
+        if (rawResponse.ok) {
+            get.innerHTML = JSON.stringify(content);
+        } else {
+            get.innerHTML = "Wait until the services are started...";
+        }
     }
     post.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -84,7 +88,11 @@
             })
         });
         const content = await rawResponse.json();
-        get.innerHTML = JSON.stringify(content);
+        if (rawResponse.ok) {
+            get.innerHTML = JSON.stringify(content);
+        } else {
+            get.innerHTML = "Invalid input...";
+        }
     }
     put.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -96,7 +104,11 @@
             method: 'DELETE'
         });
         const content = await rawResponse.json();
-        get.innerHTML = JSON.stringify(content);
+        if (rawResponse.ok) {
+            get.innerHTML = JSON.stringify(content);
+        } else {
+            get.innerHTML = "Invalid input...";
+        }
     }
     del.addEventListener("submit", (e) => {
         e.preventDefault();
