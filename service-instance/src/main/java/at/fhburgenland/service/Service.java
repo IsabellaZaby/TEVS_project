@@ -4,6 +4,7 @@ import at.fhburgenland.model.Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Stefan Gass, Isabella Zaby
@@ -19,31 +20,55 @@ public class Service {
 
     private final List<Model> modelList = new ArrayList<>();
 
-    public String getData() {
-        StringBuilder sb = new StringBuilder();
+    public List<Model> getData() {
         if (modelList.isEmpty()) {
-            sb.append("No data added yet.\n");
+            List<Model> emptyList = new ArrayList<>();
+            emptyList.add(new Model(null, "No data added yet", null, null));
+            return emptyList;
         } else {
-            for (int i = 0; i < modelList.size(); i++) {
-                sb.append(i)
-                        .append(": ")
-                        .append(modelList.get(i).toString())
-                        .append("\n");
+            return modelList;
+        }
+    }
+
+    public List<Model> addData(Model model) {
+        model.setId(generateId());
+        modelList.add(model);
+        return modelList;
+    }
+
+    public List<Model> updateData (Integer id, Model newModel) throws Exception {
+        if (getIndex(id) != null) {
+            modelList.set(getIndex(id), newModel);
+        } else {
+            throw new Exception("Could not match index");
+        }
+        return modelList;
+    }
+
+    public List<Model> deleteData (Integer id) throws Exception {
+        if (getIndex(id) != null) {
+            modelList.remove(modelList.get(getIndex(id)));
+        } else {
+            throw new Exception("Could not match index");
+        }
+        return modelList;
+    }
+
+    private Integer generateId() {
+        if (modelList.isEmpty()) {
+            return 0;
+        } else {
+            return modelList.get(modelList.size()-1).getId() + 1;
+        }
+    }
+
+    private Integer getIndex (Integer id) {
+        for (int i = 0; i < modelList.size(); i++) {
+            if (Objects.equals(modelList.get(i).getId(), id)) {
+                return i;
             }
         }
-        return sb.toString();
-    }
-
-    public void addData(Model model) {
-        modelList.add(model);
-    }
-
-    public void updateData (Integer id, Model newModel) {
-        modelList.set(id, newModel);
-    }
-
-    public void deleteData (Integer id) {
-        modelList.remove(modelList.get(id));
+        return null;
     }
 
 }
