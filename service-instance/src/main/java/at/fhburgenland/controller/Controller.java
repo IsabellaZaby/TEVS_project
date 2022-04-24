@@ -4,8 +4,9 @@ import at.fhburgenland.model.Model;
 import at.fhburgenland.model.ModelMQ;
 import at.fhburgenland.model.RestMethod;
 import at.fhburgenland.rabbitmq.RabbitMQSender;
-import at.fhburgenland.service.Service;
+import at.fhburgenland.service.RestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -27,11 +28,14 @@ public class Controller {
     private RabbitMQSender rabbitMQSender;
 
     @Autowired
-    private Service service;
+    private RestService restService;
 
-    public Controller(Service service) {
-        this.service = service;
-    }
+    @Value("${server.port}")
+    private String port;
+
+//    public Controller(Service service) {
+//        this.service = service;
+//    }
 
     /**
      * HTTP GET
@@ -41,7 +45,7 @@ public class Controller {
      */
     @GetMapping
     public List<Model> getData() {
-        return service.getData();
+        return restService.getData();
     }
 
     /**
@@ -53,9 +57,10 @@ public class Controller {
      */
     @PostMapping
     public List<Model> addData(@RequestBody Model model) {
-        model.setUhrzeit(LocalDateTime.now(ZoneId.of("Europe/Vienna")));
-        rabbitMQSender.sendMessage(new ModelMQ(model.getId(), model.getUsername(), model.getStatustext(), model.getUhrzeit(), null, RestMethod.POST));
-        return service.addData(model);
+        model.setUhrzeit(LocalDateTime.now(ZoneId.of("Europe/Vienna")).withNano(0));
+        ModelMQ message = new ModelMQ(model.getId(), model.getUsername(), model.getStatustext(), model.getUhrzeit(), RestMethod.POST, port);
+        rabbitMQSender.sendMessage(message);
+        return restService.addData(model);
     }
 
     /**
@@ -68,9 +73,10 @@ public class Controller {
      */
     @PutMapping(path = "{id}")
     public List<Model> updateData(@PathVariable("id") Integer id, @RequestBody Model newModel) throws Exception {
-        newModel.setUhrzeit(LocalDateTime.now(ZoneId.of("Europe/Vienna")));
-        rabbitMQSender.sendMessage(new ModelMQ(newModel.getId(), newModel.getUsername(), newModel.getStatustext(), newModel.getUhrzeit(), id, RestMethod.PUT));
-        return service.updateData(id, newModel);
+        newModel.setUhrzeit(LocalDateTime.now(ZoneId.of("Europe/Vienna")).withNano(0));
+        ModelMQ message = new ModelMQ(newModel.getId(), newModel.getUsername(), newModel.getStatustext(), newModel.getUhrzeit(), RestMethod.PUT, port);
+        rabbitMQSender.sendMessage(message);
+        return restService.updateData(id, newModel);
     }
 
     /**
@@ -82,8 +88,9 @@ public class Controller {
      */
     @DeleteMapping(path = "{id}")
     public List<Model> deleteData(@PathVariable("id") Integer id) throws Exception {
-        rabbitMQSender.sendMessage(new ModelMQ(null, null, null, null, id, RestMethod.DELETE));
-        return service.deleteData(id);
+        ModelMQ message = new ModelMQ(id, null, null, null, RestMethod.DELETE, port);
+        rabbitMQSender.sendMessage(message);
+        return restService.deleteData(id);
     }
 
 }

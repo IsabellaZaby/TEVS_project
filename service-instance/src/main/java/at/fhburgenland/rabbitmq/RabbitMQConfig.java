@@ -1,6 +1,6 @@
 package at.fhburgenland.rabbitmq;
 
-import com.netflix.discovery.EurekaClient;
+import at.fhburgenland.service.RestService;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     @Autowired
-    EurekaClient eurekaClient;
+    private RestService restService;
 
     @Value("${test.rabbitmq.queue}")
     String queueName;
@@ -80,7 +80,7 @@ public class RabbitMQConfig {
         SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
         simpleMessageListenerContainer.setConnectionFactory(connectionFactory);
         simpleMessageListenerContainer.setQueues(listeningQueue());
-        simpleMessageListenerContainer.setMessageListener(new RabbitMQListener());
+        simpleMessageListenerContainer.setMessageListener(new RabbitMQListener(restService));
         return simpleMessageListenerContainer;
 
     }
