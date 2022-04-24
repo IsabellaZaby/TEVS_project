@@ -12,14 +12,20 @@ import java.time.LocalDateTime;
 
 public class Model {
 
+    private Integer id;
     private String username;
     private String statustext;
     private LocalDateTime uhrzeit;
 
-    public Model(String username, String statustext, LocalDateTime uhrzeit) {
+    public Model(Integer id, String username, String statustext, LocalDateTime uhrzeit) {
+        this.id = id;
         this.username = username;
         this.statustext = statustext;
         this.uhrzeit = uhrzeit;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getUsername() {
@@ -32,6 +38,10 @@ public class Model {
 
     public LocalDateTime getUhrzeit() {
         return uhrzeit;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setUsername(String username) {
@@ -48,7 +58,7 @@ public class Model {
 
     @Override
     public String toString() {
-        return "username = '" + username + "', statustext = '" + statustext + "', " + "uhrzeit = '" + uhrzeit + "'";
+        return "id: " + id + ", username = '" + username + "', statustext = '" + statustext + "', " + "uhrzeit = '" + uhrzeit + "'";
     }
 
 }
