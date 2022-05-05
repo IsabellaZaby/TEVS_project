@@ -37,6 +37,8 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "Shut down running screen session."
 fi
 
+cd "$path" || exit 1
+
 echo
 echo "Do you want to start the RabbitMQ server? (y/n)"
 read -r continueMQ
@@ -49,7 +51,6 @@ echo "Do you want to recompile every service before starting it? (y/n)"
 echo "ATTENTION: This may take a while, so make sure to wait until the script is finished!"
 read -r continueRC
 if [[ $continueRC == y* ]]; then
-  cd "$path" || exit 1
   mvn clean install spring-boot:repackage
   cd ./discovery-server || exit 1
   mvn clean install spring-boot:repackage
@@ -57,9 +58,10 @@ if [[ $continueRC == y* ]]; then
   mvn clean install spring-boot:repackage
   cd ../service-instance || exit 1
   mvn clean install spring-boot:repackage
+  cd ..
 fi
 
-cd "$path"/discovery-server || exit 1
+cd ./discovery-server || exit 1
 screen -AmdS discoveryServer mvn spring-boot:run
 cd ../gateway || exit 1
 screen -AmdS gateway mvn spring-boot:run
