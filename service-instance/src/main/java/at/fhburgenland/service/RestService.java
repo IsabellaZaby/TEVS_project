@@ -134,7 +134,7 @@ public class RestService {
         System.out.println(new String(message.getBody()));
         Gson gson = new Gson();
         JsonObject js = gson.fromJson(new String(message.getBody()), JsonObject.class);
-        Integer id = !(js.get("id")).isJsonNull() ? js.get("id").getAsInt() : this.modelList.size();
+        Integer id = !(js.get("id").isJsonNull()) ? js.get("id").getAsInt() : this.modelList.size();
 
         if (!this.port.equals(js.get("port").getAsString())) {
             switch (RestMethod.valueOf(js.get("method").getAsString().toUpperCase())) {
@@ -148,9 +148,11 @@ public class RestService {
                     this.modelList.add(new Model(this.modelList.size(), modelMQ.getUsername(), modelMQ.getStatustext(), modelMQ.getUhrzeit()));
                     break;
                 }
-                case DELETE:
-                    this.modelList.remove(this.modelList.get(id));
+                case DELETE: {
+                    Model modelToDelete = this.modelList.stream().filter(model -> Objects.equals(model.getId(), id)).findFirst().orElse(null);
+                    this.modelList.remove(modelToDelete);
                     break;
+                }
             }
         }
     }
