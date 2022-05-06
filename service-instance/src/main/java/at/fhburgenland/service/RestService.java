@@ -166,7 +166,7 @@ public class RestService {
         JsonObject time = (JsonObject) js.get("uhrzeit");
         String str = time.get("year") + "-" + time.get("monthValue") + "-" +
                 time.get("dayOfMonth") + " " + time.get("hour") + ":" + time.get("minute") + ":" + time.get("second");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-dd HH:m:s");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d HH:m:s");
         LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
         ModelMQ modelMQ = new ModelMQ(id, js.get("username").getAsString(),
                 js.get("statustext").getAsString(), dateTime,
