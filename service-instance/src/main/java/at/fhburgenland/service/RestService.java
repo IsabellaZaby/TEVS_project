@@ -140,7 +140,9 @@ public class RestService {
             switch (RestMethod.valueOf(js.get("method").getAsString().toUpperCase())) {
                 case PUT: {
                     ModelMQ modelMQ = createModel(id, js);
-                    this.modelList.set(modelMQ.getId(), new Model(modelMQ.getId(), modelMQ.getUsername(), modelMQ.getStatustext(), modelMQ.getUhrzeit()));
+                    Model modelToPut = this.modelList.stream().filter(model -> Objects.equals(model.getId(), id)).findFirst().orElse(null);
+                    int idx = this.modelList.indexOf(modelToPut);
+                    this.modelList.set(idx, new Model(modelMQ.getId(), modelMQ.getUsername(), modelMQ.getStatustext(), modelMQ.getUhrzeit()));
                     break;
                 }
                 case POST: {
