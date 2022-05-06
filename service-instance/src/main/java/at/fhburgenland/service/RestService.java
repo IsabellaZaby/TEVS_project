@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -134,7 +135,7 @@ public class RestService {
         System.out.println(new String(message.getBody()));
         Gson gson = new Gson();
         JsonObject js = gson.fromJson(new String(message.getBody()), JsonObject.class);
-        Integer id = !(js.get("id").isJsonNull()) ? js.get("id").getAsInt() : this.modelList.size();
+        Integer id = !(js.get("id").isJsonNull()) ? js.get("id").getAsInt() : getNextId();
 
         if (!this.port.equals(js.get("port").getAsString())) {
             switch (RestMethod.valueOf(js.get("method").getAsString().toUpperCase())) {
@@ -177,6 +178,11 @@ public class RestService {
                 RestMethod.valueOf(js.get("method").getAsString().toUpperCase()), js.get("port").getAsString());
         System.out.println(modelMQ);
         return modelMQ;
+    }
+
+    private int getNextId() {
+        this.modelList.sort(Comparator.comparing(Model::getId));
+        return this.modelList.get(this.modelList.size() - 1).getId();
     }
 
 }
