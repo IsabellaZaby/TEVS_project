@@ -36,8 +36,12 @@ public class RestService {
 
     private List<Model> modelList = new ArrayList<>();
 
+    /**
+     * Provides method to reload data from "personal" database if the service crashed during execution.
+     * REST requests that were executed during the server was down will stay in the queue until the server was restarted.
+     */
     @EventListener(ApplicationReadyEvent.class)
-    public void doSomethingAfterStartup() {
+    public void loadJSONAfterStartup() {
         File newFile = new File("src/main/resources/data" + port + ".json");
         if (newFile.length() > 0) {
             JSONService jsonService = JSONService.getInstance();
