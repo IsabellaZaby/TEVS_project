@@ -39,6 +39,11 @@ fi
 
 cd "$path" || exit 1
 
+# Reset data
+test -f ./service-instance/src/main/resources/data9001.json && cat /dev/null > ./service-instance/src/main/resources/data9001.json
+test -f ./service-instance/src/main/resources/data9002.json && cat /dev/null > ./service-instance/src/main/resources/data9002.json
+test -f ./service-instance/src/main/resources/data9003.json && cat /dev/null > ./service-instance/src/main/resources/data9003.json
+
 echo
 echo "Do you want to start the RabbitMQ server? (y/n)"
 read -r continueMQ
