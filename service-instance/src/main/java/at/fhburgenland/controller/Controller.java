@@ -52,7 +52,7 @@ public class Controller {
      * @return List of objects
      */
     @PostMapping
-    public List<Model> addData(@RequestBody Model model) throws IOException {
+    public List<Model> addData(@RequestBody Model model) throws Exception {
         model.setUhrzeit(DateTimeFetcher.fetchDateTime());
         ModelMQ message = new ModelMQ(model.getId(), model.getUsername(), model.getStatustext(), model.getUhrzeit(), RestMethod.POST, port);
         rabbitMQSender.sendMessage(message);

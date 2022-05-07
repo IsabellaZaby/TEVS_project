@@ -3,7 +3,6 @@ package at.fhburgenland.service;
 import at.fhburgenland.model.Model;
 import at.fhburgenland.model.ModelMQ;
 import at.fhburgenland.model.RestMethod;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,9 +55,11 @@ public class RestService {
      * @param model object, which is to be added to the list
      * @return List of objects
      */
-    public List<Model> addData(Model model) {
+    public List<Model> addData(Model model) throws Exception {
         model.setId(generateId());
         modelList.add(model);
+        JSONService jsonService = JSONService.getInstance();
+        jsonService.writeToJson(modelList, port);
         return modelList;
     }
 
@@ -77,6 +78,8 @@ public class RestService {
         } else {
             throw new Exception("Could not match index");
         }
+        JSONService jsonService = JSONService.getInstance();
+        jsonService.writeToJson(modelList, port);
         return modelList;
     }
 
@@ -94,6 +97,8 @@ public class RestService {
         } else {
             throw new Exception("Could not match index");
         }
+        JSONService jsonService = JSONService.getInstance();
+        jsonService.writeToJson(modelList, port);
         return modelList;
     }
 
@@ -106,7 +111,7 @@ public class RestService {
         if (modelList.isEmpty()) {
             return 0;
         } else {
-            return modelList.get(modelList.size() - 1).getId() + 1;
+            return getNextId();
         }
     }
 
@@ -133,9 +138,9 @@ public class RestService {
      */
     public void getUpdateData(Message message) {
         System.out.println(new String(message.getBody()));
-        Gson gson = new Gson();
-        JsonObject js = gson.fromJson(new String(message.getBody()), JsonObject.class);
-        Integer id = !(js.get("id").isJsonNull()) ? js.get("id").getAsInt() : getNextId();
+        JSONService jsonService = JSONService.getInstance();
+        JsonObject js = jsonService.parseBody(message.getBody());
+        Integer id = !(js.get("id").isJsonNull()) ? js.get("id").getAsInt() : generateId();
 
         if (!this.port.equals(js.get("port").getAsString())) {
             switch (RestMethod.valueOf(js.get("method").getAsString().toUpperCase())) {
@@ -144,16 +149,31 @@ public class RestService {
                     Model modelToPut = this.modelList.stream().filter(model -> Objects.equals(model.getId(), id)).findFirst().orElse(null);
                     int idx = this.modelList.indexOf(modelToPut);
                     this.modelList.set(idx, new Model(modelMQ.getId(), modelMQ.getUsername(), modelMQ.getStatustext(), modelMQ.getUhrzeit()));
+                    try {
+                        jsonService.writeToJson(modelList, port);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     break;
                 }
                 case POST: {
                     ModelMQ modelMQ = createModel(id, js);
                     this.modelList.add(new Model(this.modelList.size(), modelMQ.getUsername(), modelMQ.getStatustext(), modelMQ.getUhrzeit()));
+                    try {
+                        jsonService.writeToJson(modelList, port);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     break;
                 }
                 case DELETE: {
                     Model modelToDelete = this.modelList.stream().filter(model -> Objects.equals(model.getId(), id)).findFirst().orElse(null);
                     this.modelList.remove(modelToDelete);
+                    try {
+                        jsonService.writeToJson(modelList, port);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     break;
                 }
             }
