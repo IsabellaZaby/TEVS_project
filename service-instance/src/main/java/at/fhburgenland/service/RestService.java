@@ -6,8 +6,12 @@ import at.fhburgenland.model.RestMethod;
 import com.google.gson.JsonObject;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -31,6 +35,19 @@ public class RestService {
     private String port;
 
     private List<Model> modelList = new ArrayList<>();
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void doSomethingAfterStartup() {
+        File newFile = new File("src/main/resources/data" + port + ".json");
+        if (newFile.length() > 0) {
+            JSONService jsonService = JSONService.getInstance();
+            try {
+                this.modelList = jsonService.readFromJson(port);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * HTTP GET service
