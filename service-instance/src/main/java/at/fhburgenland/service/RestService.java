@@ -228,7 +228,7 @@ public class RestService {
 
     private int getNextId() {
         this.modelList.sort(Comparator.comparing(Model::getId));
-        return this.modelList.get(this.modelList.size() - 1).getId();
+        return this.modelList.get(this.modelList.size() - 1).getId() + 1;
     }
 
 }
