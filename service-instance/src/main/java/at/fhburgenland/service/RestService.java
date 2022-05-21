@@ -188,6 +188,7 @@ public class RestService {
                     break;
                 }
                 case DELETE: {
+                    // TODO bug - delete does not work properly...
                     Model modelToDelete = this.modelList.stream().filter(model -> Objects.equals(model.getId(), id)).findFirst().orElse(null);
                     this.modelList.remove(modelToDelete);
                     try {
