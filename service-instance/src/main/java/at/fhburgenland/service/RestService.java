@@ -197,6 +197,15 @@ public class RestService {
         }
     }
 
+    private String parseTime(String input) {
+        Integer time = Integer.parseInt(input);
+        if (time <= 9) {
+            return "0" + time;
+        } else {
+            return String.valueOf(time);
+        }
+    }
+
     /**
      * Create the matching ModelMQ from content of the RabbitMQ message.
      *
@@ -207,8 +216,8 @@ public class RestService {
     private ModelMQ createModel(Integer id, JsonObject js) {
         JsonObject time = (JsonObject) js.get("uhrzeit");
         String str = time.get("year") + "-" + time.get("monthValue") + "-" +
-                time.get("dayOfMonth") + " " + time.get("hour") + ":" + time.get("minute") + ":" + time.get("second");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d HH:m:s");
+                time.get("dayOfMonth") + " " + parseTime(time.get("hour").toString()) + ":" + parseTime(time.get("minute").toString()) + ":" + parseTime(time.get("second").toString());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d H:mm:ss");
         LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
         ModelMQ modelMQ = new ModelMQ(id, js.get("username").getAsString(),
                 js.get("statustext").getAsString(), dateTime,
